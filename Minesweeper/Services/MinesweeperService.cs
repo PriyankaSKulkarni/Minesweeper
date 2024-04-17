@@ -15,28 +15,45 @@ namespace Minesweeper.Services
 
         public void StartGame(int mineFieldSize, int numBombs)
         {
-            char[,] mineField = _mineField.GenerateMineField(mineFieldSize);
-            _mineField.SetBombs(mineField, numBombs);
+            _mineField.SetBombs( numBombs);
 
             while (!_gameOver && !_gameWon)
             {
-                _mineField.Display(mineField);
+                _mineField.Display();
 
-                Console.WriteLine("Enter row and column (e.g., 0 1): ");
-                string[] input = Console.ReadLine().Split(' ');
-                int row = int.Parse(input[0]);
-                int col = int.Parse(input[1]);
+                int row = 0;
+                int col = 0;
+                bool validInput = false;
+                do
+                {
+                    Console.WriteLine("Enter row and column (e.g., 0 1): ");
+                    string[] input = Console.ReadLine().Split(' ');
 
-                if (mineField[row, col] == '*')
+                    if (input.Length != 2 || !int.TryParse(input[0], out row) || !int.TryParse(input[1], out col))
+                    {
+                        Console.WriteLine("Invalid input. Please enter row and column indices separated by space.");
+                        continue;
+                    }
+
+                    if (row < 0 || row >= mineFieldSize || col < 0 || col >= mineFieldSize)
+                    {
+                        Console.WriteLine("Invalid input. Row and column indices must be within the range of the minefield size.");
+                        continue;
+                    }
+
+                    validInput = true;
+                } while (!validInput);
+
+                if (_mineField.IsBomb(row,col))
                 {
                     _gameOver = true;
-                    _mineField.Display(mineField);
+                    _mineField.Display();
                     Console.WriteLine("Game Over! You hit a bomb.");
                 }
                 else
                 {
-                    _mineField.RevealSquare(mineField, row, col);
-                    if (_mineField.CheckWin(mineField, numBombs))
+                    _mineField.RevealSquare(row, col);
+                    if (_mineField.CheckWin(numBombs))
                     {
                         _gameWon = true;
                         Console.WriteLine("Congratulations! You win!");

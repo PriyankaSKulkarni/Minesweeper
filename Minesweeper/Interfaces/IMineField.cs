@@ -2,11 +2,12 @@
 {
     public interface IMineField
     {
-        char[,] GenerateMineField(int size);
-        void SetBombs(char[,] mineField, int numBombs);
-        void Display(char[,] mineField);
-        void RevealSquare(char[,] mineField, int row, int col);
-        bool CheckWin(char[,] mineField, int numBombs);
+        char[,] GenerateMineField();
+        void SetBombs(int numBombs);
+        bool IsBomb(int row, int col);
+        void Display();
+        void RevealSquare(int row, int col);
+        bool CheckWin(int numBombs);
     }
 }
 
